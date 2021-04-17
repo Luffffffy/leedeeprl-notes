@@ -3,22 +3,25 @@
 '''
 Author: John
 Email: johnjim0816@gmail.com
-Date: 2020-11-22 23:18:46
+Date: 2021-03-23 16:35:58
 LastEditor: John
-LastEditTime: 2020-11-27 16:55:25
+LastEditTime: 2021-03-23 16:36:20
 Discription: 
 Environment: 
 '''
 import torch.nn as nn
 import torch.nn.functional as F
-class FCN(nn.Module):
-    ''' 全连接网络'''
-    def __init__(self,state_dim):
-        super(FCN, self).__init__()
-        # 24和36为hidden layer的层数，可根据state_dim, n_actions的情况来改变
-        self.fc1 = nn.Linear(state_dim, 36)
-        self.fc2 = nn.Linear(36, 36)
-        self.fc3 = nn.Linear(36, 1)  # Prob of Left
+class MLP(nn.Module):
+    ''' 多层感知机
+        输入：state维度
+        输出：概率
+    '''
+    def __init__(self,state_dim,hidden_dim = 36):
+        super(MLP, self).__init__()
+        # 24和36为hidden layer的层数，可根据state_dim, action_dim的情况来改变
+        self.fc1 = nn.Linear(state_dim, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim,hidden_dim)
+        self.fc3 = nn.Linear(hidden_dim, 1)  # Prob of Left
 
     def forward(self, x):
         x = F.relu(self.fc1(x))

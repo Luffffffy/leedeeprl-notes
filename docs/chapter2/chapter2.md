@@ -8,9 +8,9 @@
 
 ![](img/2.2.png)
 
-上图介绍了在强化学习里面 agent 跟 environment 之间的交互，agent 在得到环境的状态过后，它会采取动作，它会把这个采取的动作返还给环境。环境在得到 agent 的动作过后，它会进入下一个状态，把下一个状态传回 agent。
+上图介绍了在强化学习里面 agent 跟 environment 之间的交互，agent 在得到环境的状态过后，它会采取动作，它会把这个采取的动作返还给环境。环境在得到 agent 的动作过后，它会进入下一个状态，把下一个状态传回 agent。在强化学习中，agent 跟环境就是这样进行交互的，这个交互过程是可以通过马尔可夫决策过程来表示的，所以马尔可夫决策过程是强化学习里面的一个基本框架。
 
-在强化学习中，agent 跟环境就是这样进行交互的，这个交互过程是可以通过马尔可夫决策过程来表示的，所以马尔可夫决策过程是强化学习里面的一个基本框架。在马尔可夫决策过程中，它的环境是 `fully observable` ，就是全部可以观测的。但是很多时候环境里面有些量是不可观测的，但是这个部分观测的问题也可以转换成一个 MDP 的问题。
+在马尔可夫决策过程中，它的环境是全部可以观测的(`fully observable`)。但是很多时候环境里面有些量是不可观测的，但是这个部分观测的问题也可以转换成一个 MDP 的问题。
 
 在介绍马尔可夫决策过程(Markov Decision Process，MDP)之前，先给大家梳理一下马尔可夫过程(Markov Process，MP)、马尔可夫奖励过程(Markov Reward Processes，MRP)。这两个过程是马尔可夫决策过程的一个基础。
 
@@ -18,7 +18,7 @@
 
 ### Markov Property
 
-![](img/2.4.png)如果一个状态转移是符合马尔可夫的，那就是说一个状态的下一个状态只取决于它当前状态，而跟它当前状态之前的状态都没有关系。
+如果一个状态转移是符合马尔可夫的，那就是说一个状态的下一个状态只取决于它当前状态，而跟它当前状态之前的状态都没有关系。
 
 我们设状态的历史为 $h_{t}=\left\{s_{1}, s_{2}, s_{3}, \ldots, s_{t}\right\}$（$h_t$ 包含了之前的所有状态），如果一个状态转移是符合马尔可夫的，也就是满足如下条件：
 $$
@@ -31,9 +31,9 @@ $$
 
 从当前 $s_t$ 转移到 $s_{t+1}$ 这个状态，它是直接就等于它之前所有的状态转移到 $s_{t+1}$。如果某一个过程满足`马尔可夫性质(Markov Property)`，就是说未来的转移跟过去是独立的，它只取决于现在。**马尔可夫性质是所有马尔可夫过程的基础。**
 
-### Markov Process
+### Markov Process/Markov Chain
 
-![](img/2.5.png)
+![](img/2.5.png ':size=500')
 
 首先看一看`马尔可夫链(Markov Chain)`。举个例子，这个图里面有四个状态，这四个状态从 $s_1,s_2,s_3,s_4$ 之间互相转移。比如说从 $s_1$ 开始，
 
@@ -47,7 +47,16 @@ $$
 * 有 0.2 的概率转移到 $s_3$ ，
 * 有 0.5 的概率留在这里。
 
-我们可以用`状态转移矩阵(State Transition Matrix)`来描述这样的状态转移。状态转移矩阵类似于一个 conditional probability，当我们知道当前我们在 $s_t$ 这个状态过后，到达下面所有状态的一个概念。所以它每一行其实描述了是从一个节点到达所有其它节点的概率。
+我们可以用`状态转移矩阵(State Transition Matrix)` $P$ 来描述状态转移 $p\left(s_{t+1}=s^{\prime} \mid s_{t}=s\right)$，如下式所示。
+$$
+P=\left[\begin{array}{cccc}
+P\left(s_{1} \mid s_{1}\right) & P\left(s_{2} \mid s_{1}\right) & \ldots & P\left(s_{N} \mid s_{1}\right) \\
+P\left(s_{1} \mid s_{2}\right) & P\left(s_{2} \mid s_{2}\right) & \ldots & P\left(s_{N} \mid s_{2}\right) \\
+\vdots & \vdots & \ddots & \vdots \\
+P\left(s_{1} \mid s_{N}\right) & P\left(s_{2} \mid s_{N}\right) & \ldots & P\left(s_{N} \mid s_{N}\right)
+\end{array}\right]
+$$
+状态转移矩阵类似于一个 conditional probability，当我们知道当前我们在 $s_t$ 这个状态过后，到达下面所有状态的一个概念。所以它每一行其实描述了是从一个节点到达所有其它节点的概率。
 
 ### Example of MP
 
@@ -71,13 +80,11 @@ $$
 
 ![](img/2.8.png)
 
-这里是我们刚才看的马尔可夫链，如果把奖励也放上去的话，就是说到达每一个状态，我们都会获得一个奖励。这里我们可以设置对应的奖励，比如说到达 $s_1$ 状态的时候，可以获得 5 的奖励，到达 $s_7$ 的时候，有 10 的奖励，其它状态没有任何奖励。因为这里状态是有限的，所以我们可以用一个向量来表示这个奖励函数，这个向量表示了每个点的奖励的大小。
+这里是我们刚才看的马尔可夫链，如果把奖励也放上去的话，就是说到达每一个状态，我们都会获得一个奖励。这里我们可以设置对应的奖励，比如说到达 $s_1$ 状态的时候，可以获得 5 的奖励，到达 $s_7$ 的时候，可以得到 10 的奖励，其它状态没有任何奖励。因为这里状态是有限的，所以我们可以用向量 $R=[5,0,0,0,0,0,10]$ 来表示这个奖励函数，这个向量表示了每个点的奖励大小。
 
 我们通过一个形象的例子来理解 MRP。我们把一个纸船放到河流之中，那么它就会随着这个河流而流动，它自身是没有动力的。所以你可以把 MRP 看成是一个随波逐流的例子，当我们从某一个点开始的时候，这个纸船就会随着事先定义好的状态转移进行流动，它到达每个状态过后，我们就有可能获得一些奖励。
 
 ### Return and Value function
-
-![](img/2.9.png)
 
 这里我们进一步定义一些概念。
 
@@ -99,17 +106,17 @@ $$
   \end{aligned}
   $$
 
-$G_t$ 是之前定义的 `discounted return`，我们这里取了一个期望，期望就是说从这个状态开始，你有可能获得多大的价值。所以这个期望也可以看成是对未来可能获得奖励的它的当前价值的一个表现，就是当你进入某一个状态过后，你现在就有多大的价值。
+$G_t$ 是之前定义的 `discounted return`，我们这里取了一个期望，期望就是说从这个状态开始，你有可能获得多大的价值。所以这个期望也可以看成是对未来可能获得奖励的当前价值的一个表现，就是当你进入某一个状态过后，你现在就有多大的价值。
 
 ### Why Discount Factor
 
-![](img/2.10.png)**这里解释一下为什么需要 discount factor。**
+**这里解释一下为什么需要 discount factor。**
 
 * 有些马尔可夫过程是带环的，它并没有终结，我们想避免这个无穷的奖励。
 * 我们并没有建立一个完美的模拟环境的模型，也就是说，我们对未来的评估不一定是准确的，我们不一定完全信任我们的模型，因为这种不确定性，所以我们对未来的预估增加一个折扣。我们想把这个不确定性表示出来，希望尽可能快地得到奖励，而不是在未来某一个点得到奖励。
 * 如果这个奖励是有实际价值的，我们可能是更希望立刻就得到奖励，而不是后面再得到奖励（现在的钱比以后的钱更有价值）。
 * 在人的行为里面来说的话，大家也是想得到即时奖励。
-* 有些时候可以把这个系数设为 0，设为 0 过后，我们就只关注了它当前的奖励。我们也可以把它设为 1，设为 1 的话就是对未来并没有折扣，未来获得的奖励跟当前获得的奖励是一样的。
+* 有些时候可以把这个系数设为 0，$\gamma=0$：我们就只关注了它当前的奖励。我们也可以把它设为 1，$\gamma=1$：对未来并没有折扣，未来获得的奖励跟当前获得的奖励是一样的。
 
 Discount factor 可以作为强化学习 agent 的一个超参数来进行调整，然后就会得到不同行为的 agent。
 
@@ -200,13 +207,39 @@ $$
 
 >Bellman Equation 就是当前状态与未来状态的迭代关系，表示当前状态的值函数可以通过下个状态的值函数来计算。Bellman Equation 因其提出者、动态规划创始人 Richard Bellman 而得名 ，也叫作“动态规划方程”。
 
+**Bellman Equation 定义了状态之间的迭代关系，如下式所示。**
+$$
+V(s)=R(s)+\gamma \sum_{s^{\prime} \in S} P\left(s^{\prime} \mid s\right) V\left(s^{\prime}\right)
+$$
 ![](img/2.13.png)
 
-**Bellman Equation 定义了状态之间的迭代关系。**假设有一个马尔可夫转移矩阵是右边这个样子。Bellman Equation 描述的就是当前状态到未来状态的一个转移。假设我们当前是在 $s_1$， 那么它只可能去到三个未来的状态：有 0.1 的概率留在它当前这个位置，有 0.2 的概率去到 $s_2$ 状态，有 0.7 的概率去到 $s_4$ 的状态，所以我们要把这个转移乘以它未来的状态的价值，再加上它的 immediate reward 就会得到它当前状态的价值。**所以 Bellman Equation 定义的就是当前状态跟未来状态的一个迭代的关系。**
+假设有一个马尔可夫转移矩阵是右边这个样子，Bellman Equation 描述的就是当前状态到未来状态的一个转移。假设我们当前是在 $s_1$， 那么它只可能去到三个未来的状态：有 0.1 的概率留在它当前这个位置，有 0.2 的概率去到 $s_2$ 状态，有 0.7 的概率去到 $s_4$ 的状态，所以我们要把这个转移乘以它未来的状态的价值，再加上它的 immediate reward 就会得到它当前状态的价值。**所以 Bellman Equation 定义的就是当前状态跟未来状态的一个迭代的关系。**
 
-![](img/2.14.png)
-
-我们可以把 Bellman Equation 写成一种矩阵的形式。首先有这个转移矩阵。我们当前这个状态是一个向量  $[V(s_1),V(s_2),\cdots,V(s_N)]^T$。我们可以写成迭代的形式。我们每一行来看的话，$V$ 这个向量乘以了转移矩阵里面的某一行，再加上它当前可以得到的 reward，就会得到它当前的价值。
+我们可以把 Bellman Equation 写成一种矩阵的形式，如下式所示。
+$$
+\left[\begin{array}{c}
+V\left(s_{1}\right) \\
+V\left(s_{2}\right) \\
+\vdots \\
+V\left(s_{N}\right)
+\end{array}\right]=\left[\begin{array}{c}
+R\left(s_{1}\right) \\
+R\left(s_{2}\right) \\
+\vdots \\
+R\left(s_{N}\right)
+\end{array}\right]+\gamma\left[\begin{array}{cccc}
+P\left(s_{1} \mid s_{1}\right) & P\left(s_{2} \mid s_{1}\right) & \ldots & P\left(s_{N} \mid s_{1}\right) \\
+P\left(s_{1} \mid s_{2}\right) & P\left(s_{2} \mid s_{2}\right) & \ldots & P\left(s_{N} \mid s_{2}\right) \\
+\vdots & \vdots & \ddots & \vdots \\
+P\left(s_{1} \mid s_{N}\right) & P\left(s_{2} \mid s_{N}\right) & \ldots & P\left(s_{N} \mid s_{N}\right)
+\end{array}\right]\left[\begin{array}{c}
+V\left(s_{1}\right) \\
+V\left(s_{2}\right) \\
+\vdots \\
+V\left(s_{N}\right)
+\end{array}\right]
+$$
+首先有这个转移矩阵。我们当前这个状态是一个向量  $[V(s_1),V(s_2),\cdots,V(s_N)]^T$。我们可以写成迭代的形式。我们每一行来看的话，$V$ 这个向量乘以了转移矩阵里面的某一行，再加上它当前可以得到的 reward，就会得到它当前的价值。
 
 当我们把 Bellman Equation 写成矩阵形式后，可以直接求解：
 $$
@@ -226,9 +259,7 @@ $$
 
 ### Iterative Algorithm for Computing Value of a MRP
 
-![](img/2.15.png)
-
-接下来我们来求解这个价值函数。**我们可以通过迭代的方法来解这种状态非常多的 MRP，**比如说：
+接下来我们来求解这个价值函数。**我们可以通过迭代的方法来解这种状态非常多的 MRP(large MRPs)，**比如说：
 
 * 动态规划的方法，
 * 蒙特卡罗的办法(通过采样的办法去计算它)，
@@ -261,8 +292,6 @@ $$
 
 ### Policy in MDP
 
-![](img/2.19.png)
-
 * Policy 定义了在某一个状态应该采取什么样的动作。
 
 * 知道当前状态过后，我们可以把当前状态带入 policy function，然后就会得到一个概率，即 
@@ -292,8 +321,6 @@ $$
 * 但对于 MDP，它的中间多了一层这个动作 a ，就是说在你当前这个状态的时候，首先要决定的是采取某一种动作，那么你会到了某一个黑色的节点。到了这个黑色的节点，因为你有一定的不确定性，当你当前状态决定过后以及你当前采取的动作过后，你到未来的状态其实也是一个概率分布。**所以在这个当前状态跟未来状态转移过程中这里多了一层决策性，这是 MDP 跟之前的马尔可夫过程很不同的一个地方。**在马尔可夫决策过程中，动作是由 agent 决定，所以多了一个 component，agent 会采取动作来决定未来的状态转移。
 
 ### Value function for MDP
-
-![](img/2.22.png)
 
 顺着 MDP 的定义，我们可以把 `状态-价值函数(state-value function)`，就是在 MDP 里面的价值函数也进行一个定义，它的定义是跟 MRP 是类似的，如式 (3)  所示：
 $$
@@ -328,8 +355,6 @@ $$
 
 ### Bellman Expectation Equation
 
-![](img/2.23.png)
-
 **我们可以把状态-价值函数和 Q 函数拆解成两个部分：即时奖励(immediate reward) 和后续状态的折扣价值(discounted value of successor state)。**
 
 通过对状态-价值函数进行一个分解，我们就可以得到一个类似于之前 MRP 的 Bellman Equation，这里叫 `Bellman Expectation Equation`，如式 (6) 所示：
@@ -342,9 +367,7 @@ q^{\pi}(s, a)=E_{\pi}\left[R_{t+1}+\gamma q^{\pi}\left(s_{t+1}, A_{t+1}\right) \
 $$
 **Bellman expectation equation 定义了你当前状态跟未来状态之间的一个关联。**
 
-![](img/2.24.png)
-
-**那我们进一步进行一个简单的分解。**
+我们进一步进行一个简单的分解。
 
 我们先给出等式 (8)：
 $$
@@ -389,7 +412,7 @@ $$
 * 第一层加和就是这个叶子节点，往上走一层的话，我们就可以把未来的价值($s'$ 的价值) backup 到黑色的节点。
 * 第二层加和是对 action 进行加和。得到黑色节点的价值过后，再往上 backup 一层，就会推到根节点的价值，即当前状态的价值。
 
-![](img/state_value_function_backup.png ':size=450')
+![](img/state_value_function_backup.png ':size=650')
 
 上图是状态-价值函数的计算分解图，上图 B 计算公式为
 $$
@@ -417,7 +440,7 @@ $$
 * 第一层加和是先把这个叶子节点从黑色节点推到这个白色的节点，进了它的这个状态。
 * 当我们到达某一个状态过后，再对这个白色节点进行一个加和，这样就把它重新推回到当前时刻的一个 Q 函数。
 
-![](img/q_function_backup.png ':size=450')
+![](img/q_function_backup.png ':size=650')
 
 在上图 C 中，
 $$
@@ -431,9 +454,8 @@ $$
 
 ### Policy Evaluation(Prediction)
 
-![](img/2.27.png)
-
-当我们知道一个 MDP 以及要采取的策略 $\pi$ ，计算价值函数的过程就是 `policy evaluation`。就像我们在评估这个策略，我们会得到多大的奖励。**Policy evaluation 在有些地方也被叫做 `prediction`，也就是预测你当前采取的这个策略最终会产生多少的价值。**
+* 当我们知道一个 MDP 以及要采取的策略 $\pi$ ，计算价值函数 $v^{\pi}(s)$ 的过程就是 `policy evaluation`。就像我们在评估这个策略，我们会得到多大的奖励。
+* **Policy evaluation 在有些地方也被叫做 `(value) prediction`，也就是预测你当前采取的这个策略最终会产生多少的价值。**
 
 ![](img/2.28.png)
 
@@ -540,7 +562,7 @@ MDP 是满足动态规划的要求的，
 
 这里有一个方法是说，我们直接把这个 `Bellman Expectation Backup` 拿过来，变成一个迭代的过程，这样反复迭代直到收敛。这个迭代过程可以看作是 `synchronous backup` 的过程。
 
-> 同步备份(synchronous backup)是指每一次的迭代都会完全更新所有的状态，这样对于程序资源需求特别大。异步备份(asynchronous backup)的思想就是通过某种方式，使得每一次得带不需要更新所有的状态，因为事实上，很多的状态也不需要被更新。
+> 同步备份(synchronous backup)是指每一次的迭代都会完全更新所有的状态，这样对于程序资源需求特别大。异步备份(asynchronous backup)的思想就是通过某种方式，使得每一次迭代不需要更新所有的状态，因为事实上，很多的状态也不需要被更新。
 
 $$
 v_{t+1}(s)=\sum_{a \in \mathcal{A}} \pi(a \mid s)\left(R(s, a)+\gamma \sum_{s^{\prime} \in \mathcal{S}} P\left(s^{\prime} \mid s, a\right) v_{t}\left(s^{\prime}\right)\right) \tag{14}
@@ -563,7 +585,7 @@ $$
 
 ![](img/2.35.png)
 
-* 比如现在的环境是一个 small gridworld。这个 agent 的目的是从某一个状态开始，然后到达终点状态。它的终止状态就是左上角跟右上角，这里总共有 14 个状态，因为我们把每个位置用一个状态来表示。
+* 比如现在的环境是一个 small gridworld。这个 agent 的目的是从某一个状态开始，然后到达终点状态。它的终止状态就是左上角跟右下角，这里总共有 14 个状态，因为我们把每个位置用一个状态来表示。
 * 这个 agent 采取的动作，它的 policy function 就直接先给定了，它在每一个状态都是随机游走，它们在每一个状态就是上下左右行走。它在边缘状态的时候，比如说在第四号状态的时候，它往左走的话，它是依然存在第四号状态，我们加了这个限制。
 
 * 这里我们给的奖励函数就是说你每走一步，就会得到 -1 的奖励，所以 agent 需要尽快地到达终止状态。
@@ -575,6 +597,7 @@ $$
 我们再来看一个动态的例子，首先推荐斯坦福大学的一个网站：[GridWorld: Dynamic Programming Demo](https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_dp.html) ，这个网站模拟了单步更新的过程中，所有格子的一个状态价值的变化过程。
 
 ![](img/2.37.png ':size=550')
+
 这里有很多格子，每个格子都代表了一个状态。在每个格子里面有一个初始值零。然后在每一个状态，它还有一些箭头，这个箭头就是说它在当前这个状态应该采取什么样的策略。我们这里采取一个随机的策略，不管它在哪一个状态，它上下左右的概率都是相同的。比如在某个状态，它都有上下左右 0.25 的概率采取某一个动作，所以它的动作是完全随机的。
 
 在这样的环境里面，我们想计算它每一个状态的价值。我们也定义了它的 reward function，你可以看到有些状态上面有一个 R 的值。比如我们这边有些值是为负的，我们可以看到格子里面有几个 -1 的奖励，只有一个 +1 奖励的格子。在这个棋盘的中间这个位置，可以看到有一个 R 的值是 1.0，为正的一个价值函数。 所以每个状态对应了一个值，然后有一些状态没有任何值，就说明它的这个 reward function，它的奖励是为零的。
@@ -839,7 +862,7 @@ $$
 * Policy iteration 由两部分组成：policy  evaluation 和 policy improvement。Policy Iteration 分两步，首先对当前已经搜索到的策略函数进行一个估值。得到估值过后，把 Q 函数算出来，我们进一步进行改进。
 *  Value iteration 直接把 Bellman Optimality Equation 拿进来，然后去寻找最佳的 value function，没有 policy function 在这里面。当算出 optimal value function 过后，我们再来提取最佳策略。
 
-### Summary for Prediction and Contro in MDP
+### Summary for Prediction and Control in MDP
 
 ![](img/2.65.png)
 
