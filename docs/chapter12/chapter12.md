@@ -66,7 +66,7 @@ DDPG 是 DQN 的一个扩展的版本。
 * Q 网络就是评论家(critic)，它会在每一个 step 都对 actor 输出的动作做一个评估，打一个分，估计一下 actor 的 action 未来能有多少收益，也就是去估计这个 actor 输出的这个 action 的 Q 值大概是多少，即 $Q_w(s,a)$。 Actor 就需要根据舞台目前的状态来做出一个 action。
 * 评论家就是评委，它需要根据舞台现在的状态和演员输出的 action 对 actor 刚刚的表现去打一个分数 $Q_w(s,a)$。
   * Actor 根据评委的打分来调整自己的策略，也就是更新 actor 的神经网络参数 $\theta$， 争取下次可以做得更好。
-  * Critic 则是要根据观众的反馈，也就是环境的反馈 reward 来调整自己的打分策略，也就是要更新 critic 的神经网络的参数 $w$ ，它的目标是要让每一场表演都获得观众尽可能多的欢呼声跟掌声，也就是要最大化未来的总收益。
+  * Critic 则是要根据观众的反馈，也就是环境的反馈 reward 来调整自己的打分策略，也就是要更新 critic 的神经网络的参数 $w$。Critic 的最终目标是让 Actor 的表演获得观众尽可能多的欢呼声和掌声，从而最大化未来的总收益。 
 * 最开始训练的时候，这两个神经网络参数是随机的。所以 critic 最开始是随机打分的，然后 actor 也跟着乱来，就随机表演，随机输出动作。但是由于我们有环境反馈的 reward 存在，所以 critic 的评分会越来越准确，也会评判的那个 actor 的表现会越来越好。
 * 既然 actor 是一个神经网络，是我们希望训练好的策略网络，那我们就需要计算梯度来去更新优化它里面的参数 $\theta$ 。简单的说，我们希望调整 actor 的网络参数，使得评委打分尽可能得高。注意，这里的 actor 是不管观众的，它只关注评委，它就是迎合评委的打分 $Q_w(s,a)$ 而已。
 
@@ -84,16 +84,15 @@ DDPG 是 DQN 的一个扩展的版本。
 
 * 评委一开始也不知道怎么评分，它也是在一步一步的学习当中，慢慢地去给出准确的打分。
 * 我们优化 Q 网络的方法其实跟 DQN 优化 Q 网络的方法是一样的，我们用真实的 reward $r$ 和下一步的 Q 即 Q' 来去拟合未来的收益 Q_target。
-
 * 然后让 Q 网络的输出去逼近这个 Q_target。
-  * 所以构造的 loss function 就是直接求这两个值的均方差。
+  * 所以构造的 loss function 就是直接求这两个值的均方误差（Mean Squared Error，MSE）。
   * 构造好 loss 后，我们就扔进去那个优化器，让它自动去最小化 loss 就好了。
 
 ![](img/12.8.png)
 
 我们可以把两个网络的 loss function 构造出来。
 
-策略网络的 loss function 是一个复合函数。我们把 $a = \mu_\theta(s)$ 代进去，最终策略网络要优化的是策略网络的参数 $\theta$ 。Q 网络要优化的是 $Q_w(s,a)$ 和 Q_target 之间的一个均方差。
+策略网络的 loss function 是一个复合函数。我们把 $a = \mu_\theta(s)$ 代进去，最终策略网络要优化的是策略网络的参数 $\theta$ 。Q 网络要优化的是 $Q_w(s,a)$ 和 Q_target 之间的一个均方误差。
 
 但是 Q 网络的优化存在一个和 DQN 一模一样的问题就是它后面的 Q_target 是不稳定的。此外，后面的 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是不稳定的，因为 $Q_{\bar{w}}\left(s^{\prime}, a^{\prime}\right)$ 也是一个预估的值。
 
@@ -122,7 +121,7 @@ DDPG 通过 off-policy 的方式来训练一个确定性策略。因为策略是
 
 `双延迟深度确定性策略梯度(Twin Delayed DDPG，简称 TD3)`通过引入三个关键技巧来解决这个问题：
 
-* **截断的双 Q 学习(Clipped Dobule Q-learning)** 。TD3 学习两个 Q-function（因此名字中有 “twin”）。TD3 通过最小化均方差来同时学习两个 Q-function：$Q_{\phi_1}$ 和 $Q_{\phi_2}$。两个 Q-function 都使用一个目标，两个 Q-function 中给出较小的值会被作为如下的 Q-target：
+* **截断的双 Q 学习(Clipped Dobule Q-learning)** 。TD3 学习两个 Q-function（因此名字中有 “twin”）。TD3 通过最小化均方误差来同时学习两个 Q-function：$Q_{\phi_1}$ 和 $Q_{\phi_2}$。两个 Q-function 都使用一个目标，两个 Q-function 中给出较小的值会被作为如下的 Q-target：
 
 $$
 y\left(r, s^{\prime}, d\right)=r+\gamma(1-d) \min _{i=1,2} Q_{\phi_{i, t a r g}}\left(s^{\prime}, a_{T D 3}\left(s^{\prime}\right)\right)
