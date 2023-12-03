@@ -209,23 +209,21 @@ A：**状态**是对世界的完整描述，不会隐藏世界的信息。**观�
 
 环境有自己的函数$s_{t}^{e}=f^{e}\left(H_{t}\right)$ 来更新状态，在智能体的内部也有一个函数$s_{t}^{a}=f^{a}\left(H_{t}\right)$来更新状 态。当智能体的状态与环境的状态等价的时候，即当智能体能够观察到环境的所有状态时，我们称这个环 境是完全可观测的（fully observed）。在这种情况下面，强化学习通常被建模成一个马尔可夫决策过程 （Markov decision process，MDP）的问题。在马尔可夫决策过程中，$o_{t}=s_{t}^{e}=s_{t}^{a}$。
 
-但是有一种情况是智能体得到的观测并不能包含环境运作的所有状态，因为在强化学习的设定里面， 环境的状态才是真正的所有状态。比如智能体在玩 black jack 游戏，它能看到的其实是牌面上的牌。或者在 玩雅达利游戏的时候，观测到的只是当前电视上面这一帧的信息，我们并没有得到游戏内部里面所有的运 作状态。也就是当智能体只能看到部分的观测，我们就称这个环境是部分可观测的（partially observed）。 在这种情况下，强化学习通常被建模成部分可观测马尔可夫决策过程（partially observable Markov decision process, POMDP）的问题。部分可观测马尔可夫决策过程是马尔可夫决策过程的一种泛化。 部分可观测马尔可夫决策过程依然具有马尔可夫性质，但是假设智能体无法感知环境的状态，只能知道 部分观测值。比如在自动驾驶中，智能体只能感知传感器采集的有限的环境信息。部分可观测马尔可夫决策过程可以用一个七元组描述：$(S,A,T,R,\Omega,O,\gamma)$。其中 $S$ 表示状态空间，为隐变量，$A$ 为动作空间，$T(s'|s,a)$ 为状态转移概率，$R$ 为奖励函数，$\Omega(o|s,a)$ 为观测概率，$O$ 为观测空间，$\gamma$ 为折扣系数。
+但是有一种情况是智能体得到的观测并不能包含环境运作的所有状态，因为在强化学习的设定里面， 环境的状态才是真正的所有状态。比如智能体在玩 black jack 游戏，它能看到的其实是牌面上的牌。或者在 玩雅达利游戏的时候，观测到的只是当前电视上面这一帧的信息，我们并没有得到游戏内部里面所有的运 作状态。也就是当智能体只能看到部分的观测，我们就称这个环境是部分可观测的（partially observed）。 在这种情况下，强化学习通常被建模成**部分可观测马尔可夫决策过程（partially observable Markov decision process, POMDP）**的问题。部分可观测马尔可夫决策过程是马尔可夫决策过程的一种泛化。 部分可观测马尔可夫决策过程依然具有马尔可夫性质，但是假设智能体无法感知环境的状态，只能知道 部分观测值。比如在自动驾驶中，智能体只能感知传感器采集的有限的环境信息。部分可观测马尔可夫决策过程可以用一个七元组描述：$(S,A,T,R,\Omega,O,\gamma)$。其中 $S$ 表示状态空间，为隐变量，$A$ 为动作空间，$T(s'|s,a)$ 为状态转移概率，$R$ 为奖励函数，$\Omega(o|s,a)$ 为观测概率，$O$ 为观测空间，$\gamma$ 为折扣系数。
 
 ## 1.3 动作空间
 
 不同的环境允许不同种类的动作。在给定的环境中，有效动作的集合经常被称为动作空间（action space）。像雅达利游戏和围棋（Go）这样的环境有离散动作空间（discrete action space），在这个动作 空间里，智能体的动作数量是有限的。在其他环境，比如在物理世界中控制一个智能体，在这个环境中就 有连续动作空间（continuous action space）。在连续动作空间中，动作是实值的向量。
 
-例如，走迷宫机器人如果只有往东、往南、往西、往北这 4 种移动方式，则其动作空间为离散动作空 间；如果机器人可以向 360 ◦ 中的任意角度进行移动，则其动作空间为连续动作空间。
+例如，走迷宫机器人如果只有往东、往南、往西、往北这 4 种移动方式，则其动作空间为离散动作空 间；如果机器人可以向 360 度中的任意角度进行移动，则其动作空间为连续动作空间。
 
 ### 1.4 强化学习智能体的组成成分和类型
-
-**部分可观测马尔可夫决策过程(Partially Observable Markov Decision Processes, POMDP)** 是一个马尔可夫决策过程的泛化。POMDP 依然具对于一个强化学习 agent，它可能有一个或多个如下的组成成分：
 
 对于一个强化学习智能体，它可能有一个或多个如下的组成成分。
 
 * **策略（policy）**。智能体会用策略来选取下一步的动作。
 
-* **价值函数（value function）**。我们用价值函数来对当前状态进行评估。价值函数用于评估智能体进 入某个状态后，可以对后面的奖励带来多大的影响。价值函数值越大，说明智能体进入这个状态越有 利。
+* **价值函数（value function）**。我们用价值函数来对当前状态进行评估。价值函数用于评估智能体进 入某个状态后，可以对后面的奖励带来多大的影响。价值函数值越大，说明智能体进入这个状态越有利。
 
 * **模型（model）**。模型表示智能体对环境的状态进行理解，它决定了环境中世界的运行方式。 下面我们深入了解这 3 个组成部分的细节。
 
@@ -430,9 +428,12 @@ OpenAI是一家非营利性的人工智能研究公司，其公布了非常多�
 
 
 我们可以通过 pip 来安装 Gym 库，由于 Gym 库 0.26.0 及其之后的版本对之前的代码不兼容，所以我们安装 0.26.0 之前的 Gym，比如 0.25.2。
-
 ```bash
 pip install gym==0.25.2
+```
+此外，为了显示图形界面，我们还需要安装 pygame 库。
+```bash
+pip install pygame
 ```
 
 在 Python 环境中导入Gym库，如果不报错，就可以认为 Gym 库安装成功。
@@ -524,17 +525,14 @@ env.close()
 
 env.step()完成了一个完整的 $S \to A \to R \to S'$ 过程。我们只要不断观测这样的过程，并让智能体在其中用相应的算法完成训练，就能得到一个高质量的强化学习模型。
 
-我们想要查看当前 Gym 库已经注册了哪些环境，可以使用以下代码：
+Gym 库已注册的环境可以通过以下代码查看：
 ```python
 from gym import envs
 env_specs = envs.registry.all()
 envs_ids = [env_spec.id for env_spec in env_specs]
 print(envs_ids)
 ```
-
-每个环境都定义了自己的观测空间和动作空间。环境 env 的观测空间用 env.observation\_space 表示，动作空间用 env.action\_space 表示。观测空间和动作空间既可以是离散空间（取值是有限个离散的值），也可以是连续空间（取值是连续的值）。在 Gym 库中，一般离散空间用 gym.spaces.Discrete 类表示，连续空间用 gym.spaces.Box 类表示。
-
-例如，环境MountainCar-v0的观测空间是Box(2,)，表示观测可以用  2  个 float 值表示；环境MountainCar-v0的动作空间是Discrete(3)，表示动作取值自{0,1,2}。对于离散空间，Discrete 类实例的成员 n 表示有几个可能的取值；对于连续空间，Box类实例的成员 low 和 high 表示每个浮点数的取值范围。
+Gym 库中的每个环境都定义了观测空间和动作空间。观测空间和动作空间可以是离散的（取值为有限个离散的值），也可以是连续的（取值为连续的值）。
 
 ###   1.7.2 MountainCar-v0 例子
 
@@ -554,19 +552,18 @@ print('动作数 = {}'.format(env.action_space.n))
 输出：
 
 ```
-观测空间 = Box(2,)
+观测空间 = Box([-1.2  -0.07], [0.6  0.07], (2,), float32)
 动作空间 = Discrete(3)
 观测范围 = [-1.2  -0.07] ~ [0.6  0.07]
 动作数 = 3    
 ```
 
+在 Gym 库中，环境的观测空间用 env.observation\_space 表示，动作空间用 env.action\_space 表示。离散空间用 gym.spaces.Discrete 类表示，连续空间用 gym.spaces.Box 类表示。对于离散空间，Discrete (n) 表示可能取值的数量为 n；对于连续空间，Box类实例成员中的 low 和 high 表示每个浮点数的取值范围。MountainCar-v0 中的观测是长度为 2 的 numpy 数组，数组中值的类型为 float。MountainCar-v0 中的动作是整数，取值范围为 {0,1,2}。
 
-由输出可知，观测空间是形状为 (2,) 的浮点型 np.array，动作空间是取 {0,1,2} 的 int 型数值。
-
-接下来考虑智能体。智能体往往是我们自己实现的。我们可以实现一个智能体类————BespokeAgent 类，代码如下：
+接下来实现智能体来控制小车移动，对应代码如下。
 
 ```python
-class BespokeAgent:
+class SimpleAgent:
     def __init__(self, env):
         pass
     
@@ -584,20 +581,20 @@ class BespokeAgent:
     def learn(self, *args): # 学习
         pass
     
-agent = BespokeAgent(env)
+agent = SimpleAgent(env)
 ```
 
-智能体的decide()方法实现了决策功能，而learn()方法实现了学习功能。BespokeAgent类是一个比较简单的类，它只能根据给定的数学表达式进行决策，不能有效学习，所以它并不是一个真正意义上的强化学习智能体类。但是，它用于演示智能体和环境的交互已经足够了。
+SimpleAgent 类的 decide()方法用于决策，learn() 方法用于学习，该智能体不是强化学习智能体，不能学习，只能根据给定的数学表达式进行决策。
 
 接下来我们试图让智能体与环境交互，代码如下。
 
 ```python
-def play_montecarlo(env, agent, render=False, train=False):
-    episode_reward = 0. # 记录回合总奖励，初始化为0
+def play(env, agent, render=False, train=False):
+    episode_reward = 0. # 记录回合总奖励，初始值为0
     observation = env.reset() # 重置游戏环境，开始新回合
     while True: # 不断循环，直到回合结束
         if render: # 判断是否显示
-            env.render() # 显示图形界面，图形界面可以用 env.close() 语句关闭
+            env.render() # 显示图形界面
         action = agent.decide(observation)
         next_observation, reward, done, _ = env.step(action) # 执行动作
         episode_reward += reward # 收集回合奖励
@@ -609,18 +606,15 @@ def play_montecarlo(env, agent, render=False, train=False):
     return episode_reward # 返回回合总奖励
 ```
 
-上面代码中的 play\_montecarlo()函数可以让智能体和环境交互一个回合，这个函数有 4 个参数。
-env 是环境类。agent 是智能体类。render 是 bool 型变量，指示在运行过程中是否要图形化显示，如果函数参数 render为 True，那么在交互过程中会调用 env.render() 以显示图形界面，而这个界面可以通过调用 env.close()关闭。
-train是 bool 型的变量，指示在运行过程中是否训练智能体，在训练过程中应当设置为 True，以调用 agent.learn()函数；在测试过程中应当设置为 False，使得智能体不变。
-这个函数有一个返回值episode\_reward，是 float 型的数值，表示智能体与环境交互一个回合的回合总奖励。
+上面代码中的 play 函数可以让智能体和环境交互一个回合，该函数有 4 个参数。env 是环境类。agent 是智能体类。render 是 bool 型变量，其用于判断是否需要图形化显示。如果 render 为 True，则在交互过程中会调用 env.render() 以显示图形界面，通过调用 env.close() 可关闭图形界面。train 是 bool 型变量，其用于判断是否训练智能体，在训练过程中设置为 True，让智能体学习；在测试过程中设置为 False，让智能体保持不变。该函数的返回值 episode\_reward 是 float 型的数值，其表示智能体与环境交互一个回合的回合总奖励。
 
-接下来，我们使用下面的代码让智能体和环境交互一个回合，并在交互过程中进行图形化显示，可用 env.close()语句关闭图形界面。
+接下来，我们使用下面的代码让智能体和环境交互一个回合，并显示图形界面。
 
 ```python
-env.seed(0) # 设置随机数种子,只是为了让结果可以精确复现,一般情况下可删去
-episode_reward = play_montecarlo(env, agent, render=True)
+env.seed(3) # 设置随机种子，让结果可复现
+episode_reward = play(env, agent, render=True)
 print('回合奖励 = {}'.format(episode_reward))
-env.close() # 此语句可关闭图形界面
+env.close() # 关闭图形界面
 ```
 
 输出：
@@ -628,20 +622,20 @@ env.close() # 此语句可关闭图形界面
 回合奖励 = -105.0    
 ```
 
-为了系统评估智能体的性能，下列代码求出了连续交互 100 回合的平均回合奖励。
+为了评估智能体的性能，需要计算出连续交互 100 回合的平均回合奖励，代码如下。
 ```python
-episode_rewards = [play_montecarlo(env, agent) for _ in range(100)]
+episode_rewards = [play(env, agent) for _ in range(100)]
 print('平均回合奖励 = {}'.format(np.mean(episode_rewards)))
 ```
 
 输出：
 ```
-平均回合奖励 = -102.61
+平均回合奖励 = -106.63
 ```
 
-小车上山环境有一个参考的回合奖励值 $-$110，如果连续 100 个回合的平均回合奖励大于 $-$110，则认为这个任务被解决了。BespokeAgent 类对应的策略的平均回合奖励就在 $-$110 左右。
+SimpleAgent 类对应策略的平均回合奖励在 $-$110 左右，而对于小车上山任务，只要连续 100 个回合的平均回合奖励大于 $-$110，就可以认为该任务被解决了。完整代码实现可参考[小车上山代码](https://github.com/datawhalechina/easy-rl/blob/master/docs/chapter1/RL_example.py)。
 
-测试智能体在 Gym 库中某个任务的性能时，学术界一般最关心 100 个回合的平均回合奖励。至于为什么是 100 个回合而不是其他回合数（比如 128 个回合），完全是习惯使然，没有什么特别的原因。对于有些任务，还会指定一个参考的回合奖励值，当连续 100 个回合的奖励大于指定的值时，就认为这个任务被解决了。但是，并不是所有的任务都指定了这样的值。对于没有指定值的任务，就无所谓任务被解决了或者没有被解决。
+测试智能体在 Gym 库中某个任务的性能时，出于习惯使然，学术界一般最关心 100 个回合的平均回合奖励。对于有些任务，还会指定一个参考的回合奖励值，当连续 100 个回合的奖励大于指定的值时，则认为该任务被解决了。而对于没有指定值的任务，就无所谓任务被解决了或没有被解决。
 
 我们对 Gym 库的用法进行总结：使用 env=gym.make(环境名)取出环境，使用 env.reset()初始化环境，使用 env.step(动作)执行一步环境，使用 env.render()显示环境，使用 env.close()关闭环境。Gym库 有对应的[官方文档](https://www.gymlibrary.dev/)，读者可以阅读文档来学习 Gym库 。
 
